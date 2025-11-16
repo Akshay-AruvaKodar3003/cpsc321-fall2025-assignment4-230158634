@@ -15,12 +15,55 @@ int maximum[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 int allocation[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 int need[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 
+// matrix
 void compute_need(int n, int m) {
     for (int i = 0; i < n; i++) {           // each customer
         for (int j = 0; j < m; j++) {       // each resource
             need[i][j] = maximum[i][j] - allocation[i][j];  
         }
     }
+}
+
+// safety algorithm
+int is_safe(int n, int m, int safeSeq[]) {
+    int work[NUMBER_OF_RESOURCES];      // temp avail
+    int finish[NUMBER_OF_CUSTOMERS];    // done flag
+
+    for (int j = 0; j < m; j++) work[j] = available[j]; 
+    for (int i = 0; i < n; i++) finish[i] = 0;
+
+    int count = 0;
+
+    while (count < n) {
+        int found = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (finish[i] == 0) {
+                int ok = 1;   
+
+                for (int j = 0; j < m; j++) {
+                    if (need[i][j] > work[j]) {
+                        ok = 0;
+                        break;
+                    }
+                }
+
+                if (ok) {
+                    for (int j = 0; j < m; j++)
+                        work[j] += allocation[i][j];   // give back
+
+                    safeSeq[count++] = i;    // add seq
+                    finish[i] = 1;           // mark done
+                    found = 1;
+                    break;
+                }
+            }
+        }
+
+        if (!found) return 0;     // unsafe
+    }
+
+    return 1;   // safe
 }
 
 int main() {
@@ -66,7 +109,7 @@ int main() {
 
     // matrix
     compute_need(n, m); 
-    
+
     // request
     int customerID;   // req customer
     int request[NUMBER_OF_RESOURCES];   // req vector
