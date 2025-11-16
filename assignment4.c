@@ -17,8 +17,8 @@ int need[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 
 // matrix
 void compute_need(int n, int m) {
-    for (int i = 0; i < n; i++) {           // each customer
-        for (int j = 0; j < m; j++) {       // each resource
+    for (int i = 0; i < n; i++) {          // each customer
+        for (int j = 0; j < m; j++) {      // each resource
             need[i][j] = maximum[i][j] - allocation[i][j];  
         }
     }
@@ -52,14 +52,14 @@ int is_safe(int n, int m, int safeSeq[]) {
                     for (int j = 0; j < m; j++)
                         work[j] += allocation[i][j];   // give back
 
-                    safeSeq[count++] = i;    // add seq
-                    finish[i] = 1;     // mark done
+                    safeSeq[count++] = i;   // add seq
+                    finish[i] = 1;   // mark done
                     found = 1;
                 }
             }
         }
 
-        if (!found) return 0;     // unsafe
+        if (!found) return 0;   // unsafe
     }
 
     return 1;   // safe
@@ -107,31 +107,30 @@ int request_resources(int n, int m, int customerID, int request[], int safeSeq[]
 
 
 int main() {
-    printf("Banker's Algorithm\n");
 
      int n, m;   // sizes
 
-    //input
+    // ------------------ input: sizes ------------------ //
     printf("Enter number of customers (processes): ");
     scanf("%d", &n);    // read customers
 
     printf("Enter number of resources: ");
     scanf("%d", &m);   // read resources
 
-    //total instances
-    int totalInstances[NUMBER_OF_RESOURCES];   // total res
+    // ------------------ input: total instances ------------------ //
+    int totalInstances[NUMBER_OF_RESOURCES];   // total resources
     printf("Enter number of instances of each resource type (%d values): ", m);
     for (int j = 0; j < m; j++) {
         scanf("%d", &totalInstances[j]);   // read totals
     }
 
-    // available
+    // ------------------ input: available ------------------ //
     printf("Enter available resources (%d values): ", m);
     for (int j = 0; j < m; j++) {
         scanf("%d", &available[j]);    // read available
     }
 
-    // maximum matrix
+    // ------------------ input: maximum matrix ------------------ //
     printf("Enter maximum demand matrix (%d x %d):\n", n, m);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -139,18 +138,18 @@ int main() {
         }
     }
 
-    // allocation matrix
+    // ------------------ input: allocation matrix ------------------ //
     printf("Enter current allocation matrix (%d x %d):\n", n, m);
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
-            scanf("%d", &allocation[i][j]);  // read allocation
+            scanf("%d", &allocation[i][j]);   // read allocation
         }
     }
 
-    // matrix
+    // ------------------ compute matrix ------------------ //
     compute_need(n, m); 
 
-    // request
+    // ------------------ input: request ------------------ //
     int customerID;   // req customer
     int request[NUMBER_OF_RESOURCES];   // req vector
 
@@ -160,11 +159,11 @@ int main() {
         scanf("%d", &request[j]);    // read req
     }
 
-
-
+     // ------------------ run request algorithm ------------------ //
     int safeSeq[NUMBER_OF_CUSTOMERS];
     int ok = request_resources(n, m, customerID, request, safeSeq);
 
+    // ------------------ output ------------------ //
     if (ok) {
         printf("State Safe\n");
         printf("Safe sequence: ");
