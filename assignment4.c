@@ -15,6 +15,14 @@ int maximum[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 int allocation[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 int need[NUMBER_OF_CUSTOMERS][NUMBER_OF_RESOURCES];
 
+void compute_need(int n, int m) {
+    for (int i = 0; i < n; i++) {           // each customer
+        for (int j = 0; j < m; j++) {       // each resource
+            need[i][j] = maximum[i][j] - allocation[i][j];  
+        }
+    }
+}
+
 int main() {
     printf("Banker's Algorithm\n");
 
@@ -57,12 +65,8 @@ int main() {
     }
 
     // matrix
-    for (int i = 0; i < n; i++) {           // each customer
-        for (int j = 0; j < m; j++) {       // each resource
-            need[i][j] = maximum[i][j] - allocation[i][j];  
-        }
-    }
-
+    compute_need(n, m); 
+    
     // request
     int customerID;   // req customer
     int request[NUMBER_OF_RESOURCES];   // req vector
