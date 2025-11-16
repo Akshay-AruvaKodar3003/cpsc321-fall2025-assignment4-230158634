@@ -53,9 +53,8 @@ int is_safe(int n, int m, int safeSeq[]) {
                         work[j] += allocation[i][j];   // give back
 
                     safeSeq[count++] = i;    // add seq
-                    finish[i] = 1;           // mark done
+                    finish[i] = 1;     // mark done
                     found = 1;
-                    break;
                 }
             }
         }
@@ -65,6 +64,47 @@ int is_safe(int n, int m, int safeSeq[]) {
 
     return 1;   // safe
 }
+
+// request algorithm
+int request_resources(int n, int m, int customerID, int request[], int safeSeq[]) {
+
+    // check need
+    for (int j = 0; j < m; j++) {
+        if (request[j] > need[customerID][j]) {
+            return 0;   // over need
+        }
+    }
+
+    // check available
+    for (int j = 0; j < m; j++) {
+        if (request[j] > available[j]) {
+            return 0;   // not enough
+        }
+    }
+
+    // pretend alloc
+    for (int j = 0; j < m; j++) {
+        available[j] -= request[j];
+        allocation[customerID][j] += request[j];
+        need[customerID][j] -= request[j];
+    }
+
+    // safety check
+    int ok = is_safe(n, m, safeSeq);
+
+    if (!ok) {
+        // rollback
+        for (int j = 0; j < m; j++) {
+            available[j] += request[j];
+            allocation[customerID][j] -= request[j];
+            need[customerID][j] += request[j];
+        }
+        return 0;   // unsafe
+    }
+
+    return 1;   // safe
+}
+
 
 int main() {
     printf("Banker's Algorithm\n");
@@ -119,6 +159,23 @@ int main() {
     for (int j = 0; j < m; j++) {
         scanf("%d", &request[j]);    // read req
     }
+
+
+
+    int safeSeq[NUMBER_OF_CUSTOMERS];
+    int ok = request_resources(n, m, customerID, request, safeSeq);
+
+    if (ok) {
+        printf("State Safe\n");
+        printf("Safe sequence: ");
+        for (int i = 0; i < n; i++) {
+            printf("C%d ", safeSeq[i]);
+        }
+        printf("\n");
+    } else {
+        printf("State Unsafe\n");
+    }
+
 
     return 0;
 }
