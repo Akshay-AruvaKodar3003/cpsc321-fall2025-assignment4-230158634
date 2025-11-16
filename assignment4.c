@@ -56,6 +56,13 @@ int main() {
         }
     }
 
+    // matrix
+    for (int i = 0; i < n; i++) {           // each customer
+        for (int j = 0; j < m; j++) {       // each resource
+            need[i][j] = maximum[i][j] - allocation[i][j];  
+        }
+    }
+
     // request
     int customerID;   // req customer
     int request[NUMBER_OF_RESOURCES];   // req vector
